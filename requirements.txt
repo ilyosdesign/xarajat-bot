@@ -1,0 +1,6 @@
+aiogram
+google-genai
+fpdf2
+openpyxl
+python-dotenv
+aiohttp

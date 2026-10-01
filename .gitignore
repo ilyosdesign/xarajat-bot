@@ -1,0 +1,17 @@
+# Muhit o'zgaruvchilari (API kalitlar)
+.env
+
+# Ma'lumotlar bazasi
+expenses.json
+xarajatlar.xlsx
+
+# Kesh fayllar
+__pycache__/
+*.pyc
+.venv/
+venv/
+env/
+
+# Yuklab olingan vaqtinchalik media fayllar
+voice_*.ogg
+photo_*.jpg
