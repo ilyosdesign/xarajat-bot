@@ -119,7 +119,7 @@ async def handle_text(message: types.Message):
         msg = await message.answer("Tahlil qilinmoqda...")
         amount, shop, products = await parse_expense_from_text(text)
         if amount:
-            add_expense(message.from_user.id, amount, products, shop, group_name=group_name)
+            err = add_expense(message.from_user.id, amount, products, shop, group_name=group_name); if err: await msg.edit_text(f"XATO (BAZA): {err}"); return
             await msg.edit_text(f"вњ… Xarajat saqlandi!\nSumma: {amount}\nDo'kon: {shop}\nMahsulotlar: {products}")
         else:
             await msg.edit_text("Kechirasiz, xarajat ma'lumotlarini aniqlay olmadim.")
@@ -156,7 +156,7 @@ async def handle_voice(message: types.Message):
             shop = data.get("shop_name", "Noma'lum")
             products = data.get("products", "Noma'lum")
             if amount:
-                add_expense(message.from_user.id, amount, products, shop, group_name=group_name)
+                err = add_expense(message.from_user.id, amount, products, shop, group_name=group_name); if err: await msg.edit_text(f"XATO (BAZA): {err}"); return
                 await msg.edit_text(f"рџЋ™ Ovozdan aniqlandi va saqlandi!\nSumma: {amount}\nDo'kon: {shop}\nMahsulotlar: {products}")
             else:
                 await msg.edit_text(f"Ovozdan o'qilgan matn:\n{response.text}")
@@ -198,7 +198,7 @@ async def handle_photo(message: types.Message):
             shop = data.get("shop_name", "Noma'lum")
             products = data.get("products", "Rasmdan xarajat")
             if amount:
-                add_expense(message.from_user.id, amount, products, shop, group_name=group_name)
+                err = add_expense(message.from_user.id, amount, products, shop, group_name=group_name); if err: await msg.edit_text(f"XATO (BAZA): {err}"); return
                 await msg.edit_text(f"рџ–ј Rasmdan aniqlandi va saqlandi!\nSumma: {amount}\nDo'kon: {shop}\nMahsulotlar: {products}")
             else:
                 await msg.edit_text("Rasmdan xarajat summasi aniqlanmadi.")
@@ -233,4 +233,5 @@ async def main():
 
 if __name__ == "__main__":
     asyncio.run(main())
+
 
