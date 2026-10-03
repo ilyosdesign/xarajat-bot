@@ -210,9 +210,9 @@ async def handle_photo(message: types.Message):
                 return
                 await msg.edit_text(f"рџ–ј Rasmdan aniqlandi va saqlandi!\nSumma: {amount}\nDo'kon: {shop}\nMahsulotlar: {products}")
             else:
-                await msg.edit_text("Rasmdan xarajat summasi aniqlanmadi.")
+                await msg.edit_text(f"Aniqlanmadi. Javob: {response.text}")
         else:
-            await msg.edit_text("Rasmdan to'g'ri xarajat ma'lumoti o'qilmadi.")
+            await msg.edit_text(f"Aniqlanmadi. Javob: {response.text}")
     except Exception as e:
         print("Error processing photo:", e)
         await msg.edit_text("Rasmni tahlil qilishda xatolik yuz berdi.")
@@ -242,6 +242,7 @@ async def main():
 
 if __name__ == "__main__":
     asyncio.run(main())
+
 
 
 
