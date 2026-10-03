@@ -31,9 +31,12 @@ def add_expense(user_id, amount, description, shop_name="Noma'lum", category="Um
     }
     
     try:
-        requests.post(f"{SUPABASE_URL}/rest/v1/expenses", headers=get_headers(), json=expense)
+        res = requests.post(f"{SUPABASE_URL}/rest/v1/expenses", headers=get_headers(), json=expense)
+        if res.status_code not in (200, 201):
+            return f"Baza xatosi ({res.status_code}): {res.text}"
+        return None
     except Exception as e:
-        print("Baza xatosi (POST):", e)
+        return f"Xato: {e}"
 
 def clear_expenses(chat_type, identifier):
     headers = {
@@ -43,10 +46,8 @@ def clear_expenses(chat_type, identifier):
     }
     try:
         if chat_type == 'private':
-            # DELETE WHERE user_id == identifier AND group_name == 'Shaxsiy'
             requests.delete(f"{SUPABASE_URL}/rest/v1/expenses?user_id=eq.{identifier}&group_name=eq.Shaxsiy", headers=headers)
         else:
-            # DELETE WHERE group_name == identifier
             requests.delete(f"{SUPABASE_URL}/rest/v1/expenses?group_name=eq.{identifier}", headers=headers)
     except Exception as e:
         print("Baza xatosi (DELETE):", e)

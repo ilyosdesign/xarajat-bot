@@ -1,4 +1,4 @@
-import os
+﻿import os
 import asyncio
 import re
 import json
@@ -68,9 +68,9 @@ async def clear_cmd(message: types.Message):
     chat_type, identifier = get_chat_info(message)
     clear_expenses(chat_type, identifier)
     if chat_type == 'private':
-        await message.answer("Shaxsiy xarajatlaringiz tarixi to'liq tozalandi! 🧹")
+        await message.answer("Shaxsiy xarajatlaringiz tarixi to'liq tozalandi! рџ§№")
     else:
-        await message.answer(f"Xarajatlar tarixi to'liq tozalandi! 🧹")
+        await message.answer(f"Xarajatlar tarixi to'liq tozalandi! рџ§№")
 
 def extract_json_from_text(res_text: str):
     json_str = re.search(r'\{.*\}', res_text, re.DOTALL)
@@ -84,8 +84,8 @@ def extract_json_from_text(res_text: str):
 prompt_template = """
 Siz xarajatlarni hisoblovchi uzbek tilidagi aqlli yordamchisiz.
 Ushbu matn, ovoz yoki chek rasmidan quyidagi ma'lumotlarni juda aniqlik bilan toping:
-1. "amount": Yakuniy to'langan xarajat summasi (faqat raqam). Agar chekda "Савдо" (Jami summa) va "Скидка" (Chegirma) alohida ko'rsatilgan bo'lsa, ularni hisoblang: Jami summadan chegirmasini ayirib tashlang va yakuniy narxni yozing (masalan, 177233.9 dan 233.9 ni ayirib, 177000 deb yozing). Agar "Итого" yoki "To'lanuvchi summa" tayyor bo'lsa, o'shani oling. "Скидка" ning o'zini xarajat deb olmang!
-2. "shop_name": Xarid qilingan do'kon nomi. DIQQAT: Chekdagi "Клиент", "Xaridor", "Mijoz" qatoriga yozilgan yoki umuman xaridorga tegishli ismlarni (masalan, "AS MEBEL ASADILLO") ASLO do'kon nomi qilib olmang! Agar do'kon nomi aniq tepada alohida ko'rsatilmagan bo'lsa (masalan tepada faqat "Асосий" degan so'z bo'lsa), unda qat'iyan "Noma'lum" deb yozing.
+1. "amount": Yakuniy to'langan xarajat summasi (faqat raqam). Agar chekda "РЎР°РІРґРѕ" (Jami summa) va "РЎРєРёРґРєР°" (Chegirma) alohida ko'rsatilgan bo'lsa, ularni hisoblang: Jami summadan chegirmasini ayirib tashlang va yakuniy narxni yozing (masalan, 177233.9 dan 233.9 ni ayirib, 177000 deb yozing). Agar "РС‚РѕРіРѕ" yoki "To'lanuvchi summa" tayyor bo'lsa, o'shani oling. "РЎРєРёРґРєР°" ning o'zini xarajat deb olmang!
+2. "shop_name": Xarid qilingan do'kon nomi. DIQQAT: Chekdagi "РљР»РёРµРЅС‚", "Xaridor", "Mijoz" qatoriga yozilgan yoki umuman xaridorga tegishli ismlarni (masalan, "AS MEBEL ASADILLO") ASLO do'kon nomi qilib olmang! Agar do'kon nomi aniq tepada alohida ko'rsatilmagan bo'lsa (masalan tepada faqat "РђСЃРѕСЃРёР№" degan so'z bo'lsa), unda qat'iyan "Noma'lum" deb yozing.
 3. "products": Olingan barcha mahsulotlar nomi va miqdorini ro'yxat qilib yozing.
 Faqat JSON formatda qaytaring, qo'shimcha gaplarsiz.
 """
@@ -120,7 +120,7 @@ async def handle_text(message: types.Message):
         amount, shop, products = await parse_expense_from_text(text)
         if amount:
             add_expense(message.from_user.id, amount, products, shop, group_name=group_name)
-            await msg.edit_text(f"✅ Xarajat saqlandi!\nSumma: {amount}\nDo'kon: {shop}\nMahsulotlar: {products}")
+            await msg.edit_text(f"вњ… Xarajat saqlandi!\nSumma: {amount}\nDo'kon: {shop}\nMahsulotlar: {products}")
         else:
             await msg.edit_text("Kechirasiz, xarajat ma'lumotlarini aniqlay olmadim.")
     else:
@@ -157,7 +157,7 @@ async def handle_voice(message: types.Message):
             products = data.get("products", "Noma'lum")
             if amount:
                 add_expense(message.from_user.id, amount, products, shop, group_name=group_name)
-                await msg.edit_text(f"🎙 Ovozdan aniqlandi va saqlandi!\nSumma: {amount}\nDo'kon: {shop}\nMahsulotlar: {products}")
+                await msg.edit_text(f"рџЋ™ Ovozdan aniqlandi va saqlandi!\nSumma: {amount}\nDo'kon: {shop}\nMahsulotlar: {products}")
             else:
                 await msg.edit_text(f"Ovozdan o'qilgan matn:\n{response.text}")
         else:
@@ -199,7 +199,7 @@ async def handle_photo(message: types.Message):
             products = data.get("products", "Rasmdan xarajat")
             if amount:
                 add_expense(message.from_user.id, amount, products, shop, group_name=group_name)
-                await msg.edit_text(f"🖼 Rasmdan aniqlandi va saqlandi!\nSumma: {amount}\nDo'kon: {shop}\nMahsulotlar: {products}")
+                await msg.edit_text(f"рџ–ј Rasmdan aniqlandi va saqlandi!\nSumma: {amount}\nDo'kon: {shop}\nMahsulotlar: {products}")
             else:
                 await msg.edit_text("Rasmdan xarajat summasi aniqlanmadi.")
         else:
@@ -233,3 +233,4 @@ async def main():
 
 if __name__ == "__main__":
     asyncio.run(main())
+
