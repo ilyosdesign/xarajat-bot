@@ -1,50 +1,61 @@
-import json
 import os
+import requests
 from datetime import datetime
+from dotenv import load_dotenv
 
-DB_FILE = "expenses.json"
+load_dotenv()
+
+SUPABASE_URL = os.getenv("SUPABASE_URL")
+SUPABASE_KEY = os.getenv("SUPABASE_KEY")
+
+def get_headers():
+    return {
+        "apikey": SUPABASE_KEY,
+        "Authorization": f"Bearer {SUPABASE_KEY}",
+        "Content-Type": "application/json",
+        "Prefer": "return=representation"
+    }
 
 def init_db():
-    if not os.path.exists(DB_FILE):
-        with open(DB_FILE, "w", encoding="utf-8") as f:
-            json.dump([], f)
-
-def save_expenses(data):
-    with open(DB_FILE, "w", encoding="utf-8") as f:
-        json.dump(data, f, indent=4, ensure_ascii=False)
+    pass
 
 def add_expense(user_id, amount, description, shop_name="Noma'lum", category="Umumiy", group_name="Shaxsiy"):
-    with open(DB_FILE, "r", encoding="utf-8") as f:
-        data = json.load(f)
-    
     expense = {
         "user_id": user_id,
         "amount": amount,
-        "description": description,
+        "description": str(description) if not isinstance(description, list) else "\\n".join(str(d) for d in description),
         "shop_name": shop_name,
         "category": category,
-        "group_name": group_name,
+        "group_name": str(group_name),
         "date": datetime.now().isoformat()
     }
-    data.append(expense)
     
-    with open(DB_FILE, "w", encoding="utf-8") as f:
-        json.dump(data, f, indent=4, ensure_ascii=False)
+    try:
+        requests.post(f"{SUPABASE_URL}/rest/v1/expenses", headers=get_headers(), json=expense)
+    except Exception as e:
+        print("Baza xatosi (POST):", e)
 
 def clear_expenses(chat_type, identifier):
-    expenses = get_expenses()
-    if chat_type == 'private':
-        # Faqat shu foydalanuvchining shaxsiy xarajatlarini o'chirish
-        filtered = [d for d in expenses if not (d.get('user_id') == identifier and d.get('group_name') == 'Shaxsiy')]
-    else:
-        # Shu guruhning xarajatlarini o'chirish
-        filtered = [d for d in expenses if d.get('group_name') != identifier]
-    
-    save_expenses(filtered)
+    headers = {
+        "apikey": SUPABASE_KEY,
+        "Authorization": f"Bearer {SUPABASE_KEY}",
+        "Content-Type": "application/json"
+    }
+    try:
+        if chat_type == 'private':
+            # DELETE WHERE user_id == identifier AND group_name == 'Shaxsiy'
+            requests.delete(f"{SUPABASE_URL}/rest/v1/expenses?user_id=eq.{identifier}&group_name=eq.Shaxsiy", headers=headers)
+        else:
+            # DELETE WHERE group_name == identifier
+            requests.delete(f"{SUPABASE_URL}/rest/v1/expenses?group_name=eq.{identifier}", headers=headers)
+    except Exception as e:
+        print("Baza xatosi (DELETE):", e)
         
 def get_expenses():
-    if not os.path.exists(DB_FILE):
-        return []
-    with open(DB_FILE, "r", encoding="utf-8") as f:
-        data = json.load(f)
-    return data
+    try:
+        res = requests.get(f"{SUPABASE_URL}/rest/v1/expenses", headers=get_headers())
+        if res.status_code == 200:
+            return res.json()
+    except Exception as e:
+        print("Baza xatosi (GET):", e)
+    return []
