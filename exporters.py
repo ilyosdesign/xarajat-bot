@@ -6,9 +6,9 @@ from database import get_expenses
 def get_filtered_expenses(chat_type, identifier):
     data = get_expenses()
     if chat_type == 'private':
-        return [d for d in data if d.get('user_id') == identifier and d.get('group_name') == 'Shaxsiy']
+        return [d for d in data if str(d.get('user_id')) == str(identifier) and d.get('group_name') == 'Shaxsiy']
     else:
-        return [d for d in data if d.get('group_name') == identifier]
+        return [d for d in data if str(d.get('group_name')) == str(identifier)]
 
 import openpyxl
 
